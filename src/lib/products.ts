@@ -53,12 +53,13 @@ function matchesQuery(product: Product, rawQuery: string): boolean {
   const q = rawQuery.trim().toLowerCase();
   if (!q) return true;
   const terms = q.split(/\s+/);
+  const category = categoryOf(product);
   const haystack = [
-    product.name,
+    product.name.en,
     product.sku,
     product.id,
-    categoryOf(product).name,
-    product.shortDescription,
+    category.name.en,
+    product.shortDescription.en,
     ...product.keywords,
   ]
     .join(' ')
@@ -71,7 +72,7 @@ function matchesFilters(product: Product, filters: CatalogueFilters): boolean {
     const cat = categoryBySlug(filters.category);
     if (!cat || product.categoryId !== cat.id) return false;
   }
-  if (filters.application && !product.applications.includes(filters.application)) return false;
+  if (filters.application && !product.applications.some((app) => app.en === filters.application)) return false;
   if (filters.certification && !product.certificationIds.includes(filters.certification)) return false;
   return true;
 }
@@ -80,13 +81,13 @@ function sortProducts(list: Product[], sort: SortKey): Product[] {
   const sorted = [...list];
   switch (sort) {
     case 'name':
-      sorted.sort((a, b) => a.name.localeCompare(b.name));
+      sorted.sort((a, b) => a.name.en.localeCompare(b.name.en));
       break;
     case 'category':
       sorted.sort(
         (a, b) =>
-          categoryOf(a).name.localeCompare(categoryOf(b).name) ||
-          a.name.localeCompare(b.name),
+          categoryOf(a).name.en.localeCompare(categoryOf(b).name.en) ||
+          a.name.en.localeCompare(b.name.en),
       );
       break;
     case 'featured':

@@ -12,6 +12,7 @@ import { ExportSection } from '../sections/ExportSection';
 import { CtaBand } from '../sections/StatsBand';
 import { usePageMeta, homeJsonLd } from '../lib/seo';
 import { seo } from '../config/theme';
+import { useLocale } from '../lib/i18n';
 
 /**
  * Section rhythm: brand statement → range → manufacturing proof → flagship
@@ -20,11 +21,12 @@ import { seo } from '../config/theme';
  * blocks share the same layout pattern.
  */
 export default function HomePage() {
+  const { locale } = useLocale();
   usePageMeta({
     title: seo.defaultTitle,
     description: seo.defaultDescription,
     path: '/',
-    jsonLd: homeJsonLd(),
+    jsonLd: homeJsonLd(locale),
   });
 
   return (

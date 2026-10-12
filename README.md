@@ -35,6 +35,44 @@ The old `src/config/*.ts` and `src/data/products.ts` files now re-export from `f
 
 See `src/config/factory.config.aunt.ts.example` for a fully filled example configuration.
 
+## Bilingual content workflow
+
+The site is bilingual (English + Chinese). All user-facing content in `src/config/factory.config.ts` is stored as `{ en: string; zh: string }` objects via the `LocalizedString` type in `src/data/types.ts`.
+
+### Adding or editing copy
+
+1. Open `src/config/factory.config.ts`.
+2. Find the field you want to change (e.g. `brand.tagline`, `contact.businessHours`, `products[0].moq`).
+3. Provide both languages:
+
+   ```ts
+   tagline: {
+     en: 'Wiring devices built to specification.',
+     zh: '按规格生产的电工产品。',
+   },
+   ```
+
+### Displaying localized content in components
+
+Use the `pick()` helper from `src/lib/i18n.tsx` together with `useLocale()`:
+
+```tsx
+import { useLocale, pick } from '../lib/i18n';
+
+export function MyComponent() {
+  const { locale } = useLocale();
+  return <p>{pick(configField, locale)}</p>;
+}
+```
+
+For catalogue entities (products, categories, specs), prefer the helpers in `src/lib/display.ts` (`productName`, `categoryName`, `specLabel`, etc.) — they wrap `pick()` for the current locale.
+
+Static UI chrome (button labels, form errors, aria text) lives in the translation catalog at `src/lib/catalog.ts` and is rendered with `t('key')` from `useLocale()`.
+
+### Language switch
+
+A language toggle is always visible in the site header. Switching stores the preference in `localStorage` under `nova.locale`, updates `<html lang>`, and re-renders all localized content. SEO `hreflang` tags are updated per page by `src/lib/seo.ts`.
+
 ### New-client launch checklist
 
 1. Replace `{{SITE_URL_PLACEHOLDER}}` in `src/config/factory.config.ts` (`seo.siteUrl`) with the real domain, e.g. `https://xxx.github.io/仓库名/`.

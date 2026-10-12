@@ -5,7 +5,7 @@ import { company } from '../config/company';
 import { faqs } from '../config/certifications';
 import { isEmail, isNonEmpty, type FieldErrors } from '../lib/validation';
 import { usePageMeta } from '../lib/seo';
-import { useLocale } from '../lib/i18n';
+import { useLocale, pick } from '../lib/i18n';
 
 interface ContactFormState {
   name: string;
@@ -19,9 +19,8 @@ const EMPTY: ContactFormState = { name: '', email: '', company: '', subject: '',
 
 export default function ContactPage() {
   const { t, locale } = useLocale();
-  const isZh = locale === 'zh';
-  const addressLines = isZh && contact.addressLinesZh ? contact.addressLinesZh : contact.addressLines;
-  const businessHours = isZh && contact.businessHoursZh ? contact.businessHoursZh : contact.businessHours;
+  const addressLines = contact.addressLines.map((line) => pick(line, locale));
+  const businessHours = pick(contact.businessHours, locale);
   usePageMeta({
     title: 'Contact',
     description: `Contact NOVA INDUSTRIAL — email ${contact.email}, phone ${contact.phone}, WhatsApp and factory address in Wenzhou, China. Sales replies within one business day.`,
@@ -60,7 +59,7 @@ export default function ContactPage() {
     '',
     form.message || '—',
     '',
-    t('contact.summary.footer').replace('{company}', isZh && company.legalNameZh ? company.legalNameZh : company.legalName),
+    t('contact.summary.footer').replace('{company}', pick(company.legalName, locale)),
   ].join('\n');
 
   const mailto = `mailto:${contact.email}?subject=${encodeURIComponent(
@@ -255,9 +254,9 @@ export default function ContactPage() {
           </div>
           <div className="faq-list">
             {faqs.map((item) => (
-              <details key={item.question} className="faq-item">
-                <summary className="faq-item__q">{item.question}</summary>
-                <p className="faq-item__a body-sm">{isZh && item.answerZh ? item.answerZh : item.answer}</p>
+              <details key={item.question.en} className="faq-item">
+                <summary className="faq-item__q">{pick(item.question, locale)}</summary>
+                <p className="faq-item__a body-sm">{pick(item.answer, locale)}</p>
               </details>
             ))}
           </div>

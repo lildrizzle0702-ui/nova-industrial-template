@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { seo, company, contact } from '../config/factory.config';
-import { useLocale } from './i18n';
+import { useLocale, pick } from './i18n';
+import type { Locale } from './i18n';
 
 /** Placeholder OG/Twitter image. Replace with a real 1200×630 asset. */
 const OG_IMAGE = '/assets/img/og-placeholder.png';
@@ -110,11 +111,11 @@ export function usePageMeta({ title, description, path, jsonLd }: PageMeta) {
 
 /* ---------- Shared JSON-LD builders ---------- */
 
-export function organizationJsonLd(): Record<string, unknown> {
+export function organizationJsonLd(locale: Locale = 'en'): Record<string, unknown> {
   return {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: company.legalName,
+    name: pick(company.legalName, locale),
     url: seo.siteUrl,
     description: seo.defaultDescription,
     contactPoint: {
@@ -141,10 +142,10 @@ export function websiteJsonLd(): Record<string, unknown> {
   };
 }
 
-export function homeJsonLd(): Record<string, unknown> {
+export function homeJsonLd(locale: Locale = 'en'): Record<string, unknown> {
   return {
     '@context': 'https://schema.org',
-    '@graph': [organizationJsonLd(), websiteJsonLd()],
+    '@graph': [organizationJsonLd(locale), websiteJsonLd()],
   };
 }
 

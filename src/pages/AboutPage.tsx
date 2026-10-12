@@ -5,7 +5,7 @@ import { factSheet, manufacturingProcess, milestones } from '../config/about';
 import { EditorialMedia } from '../components/ui/Media';
 import { ArrowIcon, SectionHead } from '../components/ui/SectionHead';
 import { usePageMeta } from '../lib/seo';
-import { useLocale } from '../lib/i18n';
+import { useLocale, pick } from '../lib/i18n';
 
 /**
  * Story page — narrative hero with a factory visual so the first screen
@@ -13,7 +13,6 @@ import { useLocale } from '../lib/i18n';
  */
 export default function AboutPage() {
   const { t, locale } = useLocale();
-  const isZh = locale === 'zh';
   usePageMeta({
     title: 'About',
     description:
@@ -32,15 +31,15 @@ export default function AboutPage() {
             </h1>
             <p className="lead">
               {t('about.hero.lead')
-                .replace('{name}', isZh && company.legalNameZh ? company.legalNameZh : company.legalName)
+                .replace('{name}', pick(company.legalName, locale))
                 .replace('{founded}', String(company.founded))
-                .replace('{capacity}', isZh && company.annualCapacityZh ? company.annualCapacityZh : company.annualCapacity)
+                .replace('{capacity}', pick(company.annualCapacity, locale))
                 .replace('{regions}', String(company.markets.length))}
             </p>
             <dl className="about-facts">
               {factSheet.map((fact) => (
-                <div key={fact.label} className="about-facts__item">
-                  <dt className="mono">{isZh && fact.labelZh ? fact.labelZh : fact.label}</dt>
+                <div key={pick(fact.label, locale)} className="about-facts__item">
+                  <dt className="mono">{pick(fact.label, locale)}</dt>
                   <dd className="mono">{fact.value}</dd>
                 </div>
               ))}
@@ -64,8 +63,8 @@ export default function AboutPage() {
               <p>{t('about.intro.p2')}</p>
               <p>
                 {t('about.intro.p3')
-                  .replace('{employees}', isZh && company.employeesZh ? company.employeesZh : company.employees)
-                  .replace('{responseTime}', isZh && contact.responseTimeZh ? contact.responseTimeZh : contact.responseTime)}
+                  .replace('{employees}', pick(company.employees, locale))
+                  .replace('{responseTime}', pick(contact.responseTime, locale))}
               </p>
             </div>
           </div>
@@ -87,8 +86,8 @@ export default function AboutPage() {
             {manufacturingProcess.map((stage) => (
               <li key={stage.step} className="mfg-process__item">
                 <span className="mfg-process__step mono">{stage.step}</span>
-                <h3 className="h4">{isZh && stage.titleZh ? stage.titleZh : stage.title}</h3>
-                <p className="body-sm">{isZh && stage.bodyZh ? stage.bodyZh : stage.body}</p>
+                <h3 className="h4">{pick(stage.title, locale)}</h3>
+                <p className="body-sm">{pick(stage.body, locale)}</p>
               </li>
             ))}
           </ol>
@@ -99,10 +98,10 @@ export default function AboutPage() {
         <div className="container">
           <dl className="stat-band stat-band--ink">
             {factoryStats.map((stat) => (
-              <div key={stat.label} className="stat-band__item">
+              <div key={pick(stat.label, locale)} className="stat-band__item">
                 <dt className="stat-band__value mono">{stat.value}</dt>
-                <dd className="stat-band__label">{isZh && stat.labelZh ? stat.labelZh : stat.label}</dd>
-                {stat.note && <dd className="stat-band__note">{isZh && stat.noteZh ? stat.noteZh : stat.note}</dd>}
+                <dd className="stat-band__label">{pick(stat.label, locale)}</dd>
+                {stat.note && <dd className="stat-band__note">{pick(stat.note, locale)}</dd>}
               </div>
             ))}
           </dl>
@@ -120,19 +119,19 @@ export default function AboutPage() {
               title={t('about.markets.title')}
             />
             <ul className="markets-list">
-              {company.markets.map((market, i) => (
-                <li key={market}>
+              {company.markets.map((market) => (
+                <li key={pick(market, locale)}>
                   <span className="markets-list__name">
-                    {isZh && company.marketsZh ? company.marketsZh[i] : market}
+                    {pick(market, locale)}
                   </span>
                   <span className="caption markets-list__note">
-                    {isZh
-                      ? t(`about.marketNote.${market.replace(/\s+/g, '')}` as never)
-                      : market === 'Europe'
+                    {locale === 'zh'
+                      ? t(`about.marketNote.${pick(market, 'en').replace(/\s+/g, '')}` as never)
+                      : pick(market, 'en') === 'Europe'
                         ? 'CE · RoHS · REACH programs'
-                        : market === 'North America'
+                        : pick(market, 'en') === 'North America'
                           ? 'NEMA-format & UL-style lines'
-                          : market === 'Middle East'
+                          : pick(market, 'en') === 'Middle East'
                             ? 'BS-pattern · SASO certified'
                             : 'Universal & multi-standard ranges'}
                   </span>
@@ -153,7 +152,7 @@ export default function AboutPage() {
             {milestones.map((entry) => (
               <li key={entry.year} className="timeline__item">
                 <span className="timeline__year mono">{entry.year}</span>
-                <p className="body-sm">{isZh && entry.textZh ? entry.textZh : entry.text}</p>
+                <p className="body-sm">{pick(entry.text, locale)}</p>
               </li>
             ))}
           </ol>

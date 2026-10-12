@@ -9,9 +9,8 @@ import { resolveProductGallery, type MediaAsset } from '../config/media';
 import { ProductCard } from '../components/ui/ProductCard';
 import { ArrowIcon } from '../components/ui/SectionHead';
 import { pdpConfig } from '../config/hero';
-import { useLocale } from '../lib/i18n';
+import { useLocale, pick } from '../lib/i18n';
 import { useDisplay } from '../lib/display';
-import type { Locale } from '../lib/i18n';
 
 interface GallerySlide {
   key: string;
@@ -28,8 +27,7 @@ const BASE_SLIDES: GallerySlide[] = [
 
 export default function ProductDetailPage() {
   const { t, locale } = useLocale();
-  const isZh = (locale as Locale) === 'zh';
-  const { productName, productShort, categoryName, applicationLabel, colorName, specLabel } = useDisplay();
+  const { productName, productShort, categoryName, colorName, specLabel } = useDisplay();
   const { slug = '' } = useParams();
   const product = productBySlug(slug);
   const [active, setActive] = useState(0);
@@ -40,15 +38,15 @@ export default function ProductDetailPage() {
   }, [slug]);
 
   usePageMeta({
-    title: product ? product.name : 'Product Not Found',
-    description: product?.shortDescription,
+    title: product ? productName(product) : 'Product Not Found',
+    description: product ? productShort(product) : undefined,
     path: product ? `/products/${product.slug}` : '/products',
     jsonLd: product
       ? productJsonLd({
-          name: product.name,
+          name: productName(product),
           sku: product.sku,
-          description: product.shortDescription,
-          category: categoryOf(product).name,
+          description: productShort(product),
+          category: categoryName(categoryOf(product)),
           path: `/products/${product.slug}`,
         })
       : undefined,
@@ -83,7 +81,7 @@ export default function ProductDetailPage() {
 
   /* 15-second credibility line: standard · rating · material · certifications */
   const specBy = (prefix: string) =>
-    product.specifications.find((r) => r.label.toLowerCase().startsWith(prefix))?.value;
+    product.specifications.find((r) => r.label.en.toLowerCase().startsWith(prefix))?.value;
   const keydataParts = [
     specBy('standard'),
     specBy('rated current') &&
@@ -142,12 +140,12 @@ export default function ProductDetailPage() {
                       images={product.images}
                       view={slide.view}
                       title={stageTitle}
-                      alt={product.name}
+                      alt={productName(product)}
                     />
                   ) : (
                     <Media
                       src={slide.asset!.src}
-                      alt={slide.asset!.alt ?? product.name}
+                      alt={slide.asset!.alt ?? productName(product)}
                       objectPosition={slide.asset!.position}
                       fallback={
                         <ProductMedia
@@ -155,8 +153,8 @@ export default function ProductDetailPage() {
                           spec={product.visual}
                           images={product.images}
                           view="hero"
-                          title={product.name}
-                          alt={product.name}
+                          title={productName(product)}
+                          alt={productName(product)}
                         />
                       }
                     />
@@ -178,13 +176,13 @@ export default function ProductDetailPage() {
                           spec={product.visual}
                           images={product.images}
                           view={s.view}
-                          title={product.name}
-                          alt={product.name}
+                          title={productName(product)}
+                          alt={productName(product)}
                         />
                       ) : (
                         <Media
                           src={s.asset!.src}
-                          alt={s.asset!.alt ?? product.name}
+                          alt={s.asset!.alt ?? productName(product)}
                           objectPosition={s.asset!.position}
                           fallback={
                             <ProductMedia
@@ -192,8 +190,8 @@ export default function ProductDetailPage() {
                               spec={product.visual}
                               images={product.images}
                               view="hero"
-                              title={product.name}
-                              alt={product.name}
+                              title={productName(product)}
+                              alt={productName(product)}
                             />
                           }
                         />
@@ -236,11 +234,11 @@ export default function ProductDetailPage() {
           <dl className="pdp__commercial">
             <div>
               <dt className="mono">{t('pdp.moq')}</dt>
-              <dd>{isZh && product.moqZh ? product.moqZh : product.moq}</dd>
+              <dd>{pick(product.moq, locale)}</dd>
             </div>
             <div>
               <dt className="mono">{t('pdp.leadTime')}</dt>
-              <dd>{isZh && product.leadTimeZh ? product.leadTimeZh : product.leadTime}</dd>
+              <dd>{pick(product.leadTime, locale)}</dd>
             </div>
             <div>
               <dt className="mono">{t('pdp.finishes')}</dt>
@@ -248,12 +246,12 @@ export default function ProductDetailPage() {
             </div>
             <div>
               <dt className="mono">{t('pdp.warranty')}</dt>
-              <dd>{isZh && product.warrantyZh ? product.warrantyZh : product.warranty}</dd>
+              <dd>{pick(product.warranty, locale)}</dd>
             </div>
             <div className="pdp__commercial--wide">
               <dt className="mono">{t('pdp.oem')}</dt>
               <dd>
-                {isZh && pdpConfig.oemNoteZh ? pdpConfig.oemNoteZh : pdpConfig.oemNote} —{' '}
+                {pick(pdpConfig.oemNote, locale)} —{' '}
                 <Link to={pdpConfig.oemHref} className="text-link">
                   {t('pdp.oemHow')}
                 </Link>
@@ -268,8 +266,8 @@ export default function ProductDetailPage() {
           )}
 
           <ul className="pdp__features">
-            {product.features.map((feature, i) => (
-              <li key={feature}>{isZh && product.featuresZh?.[i] ? product.featuresZh[i] : feature}</li>
+            {product.features.map((feature) => (
+              <li key={feature.en}>{pick(feature, locale)}</li>
             ))}
           </ul>
         </div>
@@ -287,11 +285,11 @@ export default function ProductDetailPage() {
             </h2>
             <table className="spec-table">
               <caption className="visually-hidden">
-                Technical specifications for {product.name} ({product.sku})
+                Technical specifications for {productName(product)} ({product.sku})
               </caption>
               <tbody>
                 {product.specifications.map((row) => (
-                  <tr key={row.label}>
+                  <tr key={row.label.en}>
                     <th scope="row">{specLabel(row.label)}</th>
                     <td className="mono">{row.value}</td>
                   </tr>
@@ -307,7 +305,7 @@ export default function ProductDetailPage() {
               </p>
               <ul className="apps-list">
                 {product.applications.map((app) => (
-                  <li key={app}>{applicationLabel(app)}</li>
+                  <li key={app.en}>{pick(app, locale)}</li>
                 ))}
               </ul>
             </section>
@@ -318,7 +316,7 @@ export default function ProductDetailPage() {
               </p>
               <ul className="cert-strip">
                 {certs.map((cert) => (
-                  <li key={cert.id} className="cert-chip cert-chip--lg mono" title={isZh && cert.descriptionZh ? cert.descriptionZh : cert.description}>
+                  <li key={cert.id} className="cert-chip cert-chip--lg mono" title={pick(cert.description, locale)}>
                     {cert.code}
                   </li>
                 ))}
@@ -336,7 +334,7 @@ export default function ProductDetailPage() {
               <p className="eyebrow">
                 <span className="mono">04</span>{t('pdp.packaging')}
               </p>
-              <p className="body-sm mono pdp__packing-line">{isZh && product.packagingZh ? product.packagingZh : product.packaging}</p>
+              <p className="body-sm mono pdp__packing-line">{pick(product.packaging, locale)}</p>
             </section>
           </div>
         </div>
@@ -349,7 +347,7 @@ export default function ProductDetailPage() {
             <p className="eyebrow">
               <span className="mono">05</span>{t('pdp.overview')}
             </p>
-            <p>{isZh && product.descriptionZh ? product.descriptionZh : product.description}</p>
+            <p>{pick(product.description, locale)}</p>
           </div>
         </div>
       </div>

@@ -6,12 +6,12 @@ import { productBySlug } from '../lib/products';
 import { usePageMeta } from '../lib/seo';
 import { contact } from '../config/contact';
 import { quotePageMeta } from '../config/hero';
-import { useLocale } from '../lib/i18n';
+import { useLocale, pick } from '../lib/i18n';
 import { useDisplay } from '../lib/display';
 
 export default function RequestQuotePage() {
   const { t, locale } = useLocale();
-  const isZh = locale === 'zh';
+  const { productName } = useDisplay();
   const [searchParams] = useSearchParams();
   const inquiry = useInquiry();
   const presetSlug = searchParams.get('product');
@@ -46,8 +46,8 @@ export default function RequestQuotePage() {
           </div>
           <ul className="catalogue-meta mono" aria-label={t('products.metaAria')}>
             {quotePageMeta.map((m) => (
-              <li key={m.label}>
-                <span className="catalogue-meta__num">{m.label}</span> {isZh ? m.valueZh : m.value}
+              <li key={m.label.en}>
+                <span className="catalogue-meta__num">{pick(m.label, locale)}</span> {pick(m.value, locale)}
               </li>
             ))}
           </ul>
@@ -60,7 +60,7 @@ export default function RequestQuotePage() {
             note={
               presetProduct
                 ? t('quote.note.preset')
-                    .replace('{name}', useDisplay().productName(presetProduct))
+                    .replace('{name}', productName(presetProduct))
                     .replace('{sku}', presetProduct.sku)
                 : t('quote.note.empty')
             }
@@ -97,7 +97,7 @@ export default function RequestQuotePage() {
                 WhatsApp: {contact.whatsapp}
               </a>
             </p>
-            <p className="caption">{contact.businessHours}</p>
+            <p className="caption">{pick(contact.businessHours, locale)}</p>
           </div>
         </aside>
       </div>

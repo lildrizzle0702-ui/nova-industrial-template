@@ -53,7 +53,7 @@ function useIndexCounts() {
     const byCertification: Record<string, number> = {};
     for (const p of products) {
       byCategory[p.categoryId] = (byCategory[p.categoryId] ?? 0) + 1;
-      for (const a of p.applications) byApplication[a] = (byApplication[a] ?? 0) + 1;
+      for (const a of p.applications) byApplication[a.en] = (byApplication[a.en] ?? 0) + 1;
       for (const c of p.certificationIds) byCertification[c] = (byCertification[c] ?? 0) + 1;
     }
     return { byCategory, byApplication, byCertification };

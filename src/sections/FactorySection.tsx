@@ -1,12 +1,12 @@
 import { factoryStats } from '../config/company';
-import { useLocale } from '../lib/i18n';
+import { useLocale, pick } from '../lib/i18n';
 import { homeSections } from '../config/hero';
 import { EditorialMedia } from '../components/ui/Media';
 import { SectionHead } from '../components/ui/SectionHead';
 
 export function FactorySection() {
   const s = homeSections.factory;
-  const { t } = useLocale();
+  const { locale } = useLocale();
   return (
     <section className="section section--ink" aria-labelledby="factory-title">
       <div className="container">
@@ -14,14 +14,14 @@ export function FactorySection() {
           <div className="factory__copy">
             <SectionHead
               index={s.index}
-              label={s.label}
-              title={s.title}
-              description={s.description}
+              label={pick(s.label, locale)}
+              title={pick(s.title, locale)}
+              description={pick(s.description, locale)}
               onInk
             />
             <ul className="factory__points">
-              {[t('home.factory.points.1'), t('home.factory.points.2'), t('home.factory.points.3'), t('home.factory.points.4')].map((point) => (
-                <li key={point}>{point}</li>
+              {s.points.map((point) => (
+                <li key={pick(point, locale)}>{pick(point, locale)}</li>
               ))}
             </ul>
           </div>
@@ -31,10 +31,10 @@ export function FactorySection() {
         </div>
         <dl className="stat-band stat-band--ink">
           {factoryStats.map((stat) => (
-            <div key={stat.label} className="stat-band__item">
+            <div key={pick(stat.label, locale)} className="stat-band__item">
               <dt className="stat-band__value mono">{stat.value}</dt>
-              <dd className="stat-band__label">{stat.label}</dd>
-              {stat.note && <dd className="stat-band__note">{stat.note}</dd>}
+              <dd className="stat-band__label">{pick(stat.label, locale)}</dd>
+              {stat.note && <dd className="stat-band__note">{pick(stat.note, locale)}</dd>}
             </div>
           ))}
         </dl>

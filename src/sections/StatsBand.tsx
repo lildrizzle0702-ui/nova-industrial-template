@@ -1,17 +1,18 @@
 import { Link } from 'react-router-dom';
 import { ctaBand } from '../config/hero';
-import { useLocale } from '../lib/i18n';
+import { useLocale, pick } from '../lib/i18n';
 import { statsBand } from '../config/company';
 
 /** Full-width ink band with four company figures. */
 export function StatsBand() {
+  const { locale } = useLocale();
   return (
     <section className="stats-ink" aria-label="Company figures">
       <div className="container stats-ink__grid">
         {statsBand.map((stat) => (
-          <div key={stat.label} className="stats-ink__item">
+          <div key={pick(stat.label, locale)} className="stats-ink__item">
             <p className="stats-ink__value mono">{stat.value}</p>
-            <p className="stats-ink__label">{stat.label}</p>
+            <p className="stats-ink__label">{pick(stat.label, locale)}</p>
           </div>
         ))}
       </div>

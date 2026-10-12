@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { categories } from '../config/categories';
-import { useLocale } from '../lib/i18n';
+import { useLocale, pick } from '../lib/i18n';
 import { useDisplay } from '../lib/display';
 import { homeSections } from '../config/hero';
 import { productsInCategory } from '../lib/products';
@@ -9,16 +9,16 @@ import { ArrowIcon, SectionHead } from '../components/ui/SectionHead';
 
 export function CategoryGrid() {
   const s = homeSections.categories;
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const { categoryName, categoryDesc, categoryShort } = useDisplay();
   return (
     <section className="section" aria-labelledby="categories-title">
       <div className="container">
         <SectionHead
           index={s.index}
-          label={s.label}
-          title={s.title}
-          description={s.description}
+          label={pick(s.label, locale)}
+          title={pick(s.title, locale)}
+          description={pick(s.description, locale)}
           cta={{ label: t('common.viewAllProducts'), href: '/products' }}
           align="between"
         />
@@ -38,8 +38,8 @@ export function CategoryGrid() {
                       slug={representative.slug}
                       spec={representative.visual}
                       images={representative.images}
-                      title={`${category.name} range`}
-                      alt={`${category.name} range`}
+                      title={`${pick(category.name, locale)} range`}
+                      alt={`${pick(category.name, locale)} range`}
                     />
                   )}
                   <span className="category-card__count mono">{count} {t('common.skus')}</span>

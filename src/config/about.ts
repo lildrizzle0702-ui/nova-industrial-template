@@ -1,9 +1,9 @@
+import type { LocalizedString } from '../data/types';
+
 export interface ProcessStep {
   step: string;
-  title: string;
-  titleZh?: string;
-  body: string;
-  bodyZh?: string;
+  title: LocalizedString;
+  body: LocalizedString;
 }
 
 export { factSheet, manufacturingProcess, factoryMediaStrip, milestones } from './factory.config';

@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { products } from '../data/products';
 import { certificationsOf } from '../lib/products';
-import { useLocale } from '../lib/i18n';
+import { useLocale, pick } from '../lib/i18n';
 import { useDisplay } from '../lib/display';
 import { usePageMeta } from '../lib/seo';
 import { ProductMedia } from '../components/ui/Media';
@@ -10,7 +10,7 @@ import { ArrowIcon } from '../components/ui/SectionHead';
 
 /** Compare page: 2–3 products side by side, spec rows aligned. */
 export default function ComparePage() {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const { productName } = useDisplay();
   usePageMeta({
     title: 'Compare Products',
@@ -24,7 +24,7 @@ export default function ComparePage() {
 
   const specKeys = useMemo(() => {
     const set = new Set<string>();
-    selected.forEach((p) => p.specifications.forEach((r) => set.add(r.label)));
+    selected.forEach((p) => p.specifications.forEach((r) => set.add(r.label.en)));
     return Array.from(set);
   }, [selected]);
 
@@ -60,7 +60,7 @@ export default function ComparePage() {
           {selected.map((p) => (
             <div key={p.id} className="compare-cell compare-cell--head">
               <Link to={`/products/${p.slug}`} className="compare-card__media">
-                <ProductMedia slug={p.slug} spec={p.visual} images={p.images} title={p.name} alt={p.name} aspectRatio="1" />
+                <ProductMedia slug={p.slug} spec={p.visual} images={p.images} title={productName(p)} alt={productName(p)} aspectRatio="1" />
               </Link>
               <p className="compare-card__sku mono">{p.sku}</p>
               <h2 className="h3 compare-card__name">
@@ -78,9 +78,9 @@ export default function ComparePage() {
           {selected.map((p) => (
             <div key={p.id} className="compare-cell">
               <dl className="compare-meta">
-                <div><dt className="mono">{t('pdp.moq')}</dt><dd>{p.moq}</dd></div>
-                <div><dt className="mono">{t('pdp.leadTime')}</dt><dd>{p.leadTime}</dd></div>
-                <div><dt className="mono">{t('pdp.warranty')}</dt><dd>{p.warranty}</dd></div>
+                <div><dt className="mono">{t('pdp.moq')}</dt><dd>{pick(p.moq, locale)}</dd></div>
+                <div><dt className="mono">{t('pdp.leadTime')}</dt><dd>{pick(p.leadTime, locale)}</dd></div>
+                <div><dt className="mono">{t('pdp.warranty')}</dt><dd>{pick(p.warranty, locale)}</dd></div>
               </dl>
             </div>
           ))}
@@ -103,26 +103,33 @@ export default function ComparePage() {
             <div key={p.id} className="compare-cell">
               <ul className="apps-list">
                 {p.applications.map((a) => (
-                  <li key={a}>{a}</li>
+                  <li key={a.en}>{pick(a, locale)}</li>
                 ))}
               </ul>
             </div>
           ))}
 
           {/* spec rows */}
-          {specKeys.map((key) => (
-            <>
-              <div key={`l-${key}`} className="compare-cell compare-cell--label mono">{key}</div>
-              {selected.map((p) => {
-                const row = p.specifications.find((r) => r.label === key);
-                return (
-                  <div key={`${p.id}-${key}`} className="compare-cell mono">
-                    {row ? row.value : '—'}
-                  </div>
-                );
-              })}
-            </>
-          ))}
+          {specKeys.map((key) => {
+            const sample = selected
+              .map((p) => p.specifications.find((r) => r.label.en === key))
+              .find(Boolean);
+            return (
+              <>
+                <div key={`l-${key}`} className="compare-cell compare-cell--label mono">
+                  {sample ? pick(sample.label, locale) : key}
+                </div>
+                {selected.map((p) => {
+                  const row = p.specifications.find((r) => r.label.en === key);
+                  return (
+                    <div key={`${p.id}-${key}`} className="compare-cell mono">
+                      {row ? row.value : '—'}
+                    </div>
+                  );
+                })}
+              </>
+            );
+          })}
         </div>
 
         <div className="compare-page__foot">

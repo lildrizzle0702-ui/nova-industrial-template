@@ -4,11 +4,10 @@ import { factoryMediaStrip } from '../config/about';
 import { EditorialMedia } from '../components/ui/Media';
 import { ArrowIcon } from '../components/ui/SectionHead';
 import { usePageMeta } from '../lib/seo';
-import { useLocale } from '../lib/i18n';
+import { useLocale, pick } from '../lib/i18n';
 
 export default function CapabilitiesPage() {
   const { t, locale } = useLocale();
-  const isZh = locale === 'zh';
   const process = [
     { step: '01', title: t('capabilities.oem.step1.title'), body: t('capabilities.oem.step1.body') },
     { step: '02', title: t('capabilities.oem.step2.title'), body: t('capabilities.oem.step2.body') },
@@ -43,14 +42,14 @@ export default function CapabilitiesPage() {
               <div className="capability-detail__head">
                 <span className="capability-detail__index mono">{cap.index}</span>
                 <h2 className="h2" id={`cap-${cap.id}`}>
-                  {isZh && cap.titleZh ? cap.titleZh : cap.title}
+                  {pick(cap.title, locale)}
                 </h2>
               </div>
               <div className="capability-detail__body">
-                <p className="lead">{isZh && cap.descriptionZh ? cap.descriptionZh : cap.description}</p>
+                <p className="lead">{pick(cap.description, locale)}</p>
                 <ul className="check-list">
-                  {cap.points.map((point, i) => (
-                    <li key={point}>{isZh && cap.pointsZh?.[i] ? cap.pointsZh[i] : point}</li>
+                  {cap.points.map((point) => (
+                    <li key={pick(point, locale)}>{pick(point, locale)}</li>
                   ))}
                 </ul>
               </div>
@@ -64,7 +63,7 @@ export default function CapabilitiesPage() {
           <div className="media-strip">
             {factoryMediaStrip.map((m) => (
               <div key={m.subject} className="media-strip__item">
-                <EditorialMedia subject={m.subject} title={isZh && m.captionZh ? m.captionZh : m.caption} caption={isZh && m.captionZh ? m.captionZh : m.caption} aspectRatio="4 / 3" />
+                <EditorialMedia subject={m.subject} title={pick(m.caption, locale)} caption={pick(m.caption, locale)} aspectRatio="4 / 3" />
               </div>
             ))}
           </div>

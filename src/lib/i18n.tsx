@@ -1,7 +1,12 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
+import type { LocalizedString } from '../data/types';
 
 export type Locale = 'en' | 'zh';
+
+export function pick(field: LocalizedString | undefined, locale: string): string {
+  return field?.[locale as keyof LocalizedString] ?? field?.en ?? '';
+}
 
 const STORAGE_KEY = 'nova.locale';
 

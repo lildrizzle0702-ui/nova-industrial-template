@@ -3,7 +3,7 @@ import type { FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { contact } from '../../config/contact';
 import { certifications } from '../../config/certifications';
-import { useLocale } from '../../lib/i18n';
+import { useLocale, pick } from '../../lib/i18n';
 import { useDisplay } from '../../lib/display';
 import { brand } from '../../config/brand';
 import { inquiryRows, inquirySummaryText, useInquiry } from '../../lib/inquiry';
@@ -22,11 +22,11 @@ const EMPTY_FORM: InquiryContactForm = {
   message: '',
 };
 
-const certificationOptions = (t: (k: string) => string, isZh: boolean) => [
+const certificationOptions = (t: (k: string) => string, locale: string) => [
   { value: '', label: t('quote.form.certification.none') },
   ...certifications.map((c) => ({
     value: c.code,
-    label: `${c.code} - ${isZh && c.nameZh ? c.nameZh : c.name}`,
+    label: `${c.code} - ${pick(c.name, locale)}`,
   })),
   { value: 'Other / advise', label: t('quote.form.certification.other') },
 ];
@@ -47,7 +47,6 @@ const packagingOptions = (t: (k: string) => string) => [
  */
 export function QuoteRequestForm({ note }: { note?: string }) {
   const { t, locale } = useLocale();
-  const isZh = locale === 'zh';
   const { productName } = useDisplay();
   const inquiry = useInquiry();
   const rows = inquiryRows(inquiry.lines);
@@ -181,7 +180,7 @@ export function QuoteRequestForm({ note }: { note?: string }) {
                   <p className="quote-basket__name">
                     <Link to={`/products/${product.slug}`}>{productName(product)}</Link>
                   </p>
-                  <p className="caption mono">{product.sku} · MOQ {product.moq}</p>
+                  <p className="caption mono">{product.sku} · MOQ {pick(product.moq, locale)}</p>
                 </div>
                 <div className="field quote-basket__qty">
                   <label htmlFor={`qty-${product.id}`} className="field__label">
@@ -300,7 +299,7 @@ export function QuoteRequestForm({ note }: { note?: string }) {
               value={form.certification}
               onChange={(e) => set('certification')(e.target.value)}
             >
-              {certificationOptions(t, isZh).map((opt) => (
+              {certificationOptions(t, locale).map((opt) => (
                 <option key={opt.value} value={opt.value}>
                   {opt.label}
                 </option>

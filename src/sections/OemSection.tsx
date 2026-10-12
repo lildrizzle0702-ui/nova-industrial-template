@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom';
 import { homeSections } from '../config/hero';
-import { useLocale } from '../lib/i18n';
+import { useLocale, pick } from '../lib/i18n';
 import { ArrowIcon } from '../components/ui/SectionHead';
 
 export function OemSection() {
   const s = homeSections.oem;
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   return (
     <section className="section section--muted" id="oem" aria-labelledby="oem-title">
       <div className="container">
@@ -13,12 +13,12 @@ export function OemSection() {
           <div className="oem__intro">
             <p className="eyebrow">
               <span className="mono">{s.index}</span>
-              {s.label}
+              {pick(s.label, locale)}
             </p>
             <h2 className="h2" id="oem-title">
-              {s.title}
+              {pick(s.title, locale)}
             </h2>
-            <p className="lead">{s.description}</p>
+            <p className="lead">{pick(s.description, locale)}</p>
             <Link to="/request-quote" className="btn btn--primary">
               {t('home.oem.cta')}
               <ArrowIcon />
@@ -26,9 +26,9 @@ export function OemSection() {
           </div>
           <div className="oem__grid">
             {s.points.map((point) => (
-              <article key={point.title} className="oem__item">
-                <h3 className="h4">{point.title}</h3>
-                <p className="body-sm">{point.body}</p>
+              <article key={pick(point.title, locale)} className="oem__item">
+                <h3 className="h4">{pick(point.title, locale)}</h3>
+                <p className="body-sm">{pick(point.body, locale)}</p>
               </article>
             ))}
           </div>

@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { navigation } from '../../config/navigation';
 import { useInquiry } from '../../lib/inquiry';
-import { useLocale } from '../../lib/i18n';
+import { useLocale, pick } from '../../lib/i18n';
 import { Logo } from '../ui/Logo';
 
 function BasketIcon() {
@@ -18,17 +18,6 @@ function BasketIcon() {
       <path d="M6.5 7V4.5a2.5 2.5 0 0 1 5 0V7" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
     </svg>
   );
-}
-
-function navKey(href: string): string {
-  const map: Record<string, string> = {
-    '/products': 'nav.products',
-    '/capabilities': 'nav.capabilities',
-    '/quality': 'nav.quality',
-    '/about': 'nav.about',
-    '/contact': 'nav.contact',
-  };
-  return map[href] ?? 'nav.products';
 }
 
 export function Header() {
@@ -95,7 +84,7 @@ export function Header() {
                 `site-nav__link ${isActive && item.href !== '/' ? 'is-active' : ''}`
               }
             >
-              {t(navKey(item.href))}
+              {pick(item.label, locale)}
             </NavLink>
           ))}
         </nav>
@@ -115,7 +104,7 @@ export function Header() {
             {inquiry.count > 0 && <span className="basket-btn__count mono">{inquiry.count}</span>}
           </Link>
           <Link to={navigation.headerCta.href} className="btn btn--primary site-header__cta">
-            {t('nav.quote')}
+            {pick(navigation.headerCta.label, locale)}
           </Link>
           <button
             ref={menuButtonRef}
@@ -150,13 +139,13 @@ export function Header() {
                 style={{ transitionDelay: menuOpen ? `${80 + i * 40}ms` : '0ms' }}
                 tabIndex={menuOpen ? 0 : -1}
               >
-                {t(navKey(item.href))}
+                {pick(item.label, locale)}
               </NavLink>
             ))}
           </nav>
           <div className="mobile-menu__foot">
             <Link to={navigation.headerCta.href} className="btn btn--accent btn--block" tabIndex={menuOpen ? 0 : -1}>
-              {t('nav.quote')}
+              {pick(navigation.headerCta.label, locale)}
             </Link>
             <Link to="/inquiry" className="btn btn--on-ink btn--block" tabIndex={menuOpen ? 0 : -1}>
               {t('drawer.title')} ({inquiry.count})

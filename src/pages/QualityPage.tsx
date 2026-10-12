@@ -3,11 +3,10 @@ import { certifications } from '../config/certifications';
 import { EditorialMedia } from '../components/ui/Media';
 import { ArrowIcon } from '../components/ui/SectionHead';
 import { usePageMeta } from '../lib/seo';
-import { useLocale } from '../lib/i18n';
+import { useLocale, pick } from '../lib/i18n';
 
 export default function QualityPage() {
   const { t, locale } = useLocale();
-  const isZh = locale === 'zh';
   const qcProcess = [
     { title: t('quality.qc1.title'), body: t('quality.qc1.body') },
     { title: t('quality.qc2.title'), body: t('quality.qc2.body') },
@@ -69,9 +68,9 @@ export default function QualityPage() {
             {certifications.map((cert) => (
               <article key={cert.id} className="cert-card">
                 <p className="cert-card__code mono">{cert.code}</p>
-                <h3 className="h4">{isZh && cert.nameZh ? cert.nameZh : cert.name}</h3>
-                <p className="body-sm">{isZh && cert.descriptionZh ? cert.descriptionZh : cert.description}</p>
-                <p className="cert-card__scope mono">{isZh && cert.scopeZh ? cert.scopeZh : cert.scope}</p>
+                <h3 className="h4">{pick(cert.name, locale)}</h3>
+                <p className="body-sm">{pick(cert.description, locale)}</p>
+                <p className="cert-card__scope mono">{pick(cert.scope, locale)}</p>
               </article>
             ))}
           </div>

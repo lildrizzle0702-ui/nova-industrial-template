@@ -40,8 +40,8 @@ export function ProductCard({
         slug={product.slug}
         spec={product.visual}
         images={product.images}
-        title={`${product.name} — ${t('common.viewProduct')}`}
-        alt={product.name}
+        title={`${productName(product)} — ${t('common.viewProduct')}`}
+        alt={productName(product)}
       />
     </Link>
   );

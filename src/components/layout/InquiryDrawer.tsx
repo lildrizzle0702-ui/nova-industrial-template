@@ -61,8 +61,8 @@ export function InquiryDrawer() {
                       slug={product.slug}
                       spec={product.visual}
                       images={product.images}
-                      title={product.name}
-                      alt={product.name}
+                      title={productName(product)}
+                      alt={productName(product)}
                     />
                   </Link>
                   <div className="drawer__info">

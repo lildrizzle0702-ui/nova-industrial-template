@@ -3,6 +3,16 @@
    All page content flows from these types via src/config + src/data.
    ============================================================ */
 
+/* ---------- Bilingual content primitives ---------- */
+
+export interface LocalizedString {
+  en: string;
+  zh: string;
+}
+
+/** A paragraph or multi-line block that is fully bilingual. */
+export type LocalizedText = LocalizedString;
+
 /* ---------- Brand & company ---------- */
 
 export interface BrandConfig {
@@ -10,36 +20,25 @@ export interface BrandConfig {
   /** Two-line lockup: primary word + secondary word (e.g. "NOVA" / "INDUSTRIAL") */
   wordmarkPrimary: string;
   wordmarkSecondary: string;
-  tagline: string;
-  description: string;
-  taglineZh?: string;
-  descriptionZh?: string;
+  tagline: LocalizedString;
+  description: LocalizedString;
 }
 
 export interface CompanyConfig {
-  legalName: string;
+  legalName: LocalizedString;
   founded: number;
-  headquarters: string;
-  markets: string[];
-  employees: string;
-  factoryArea: string;
-  annualCapacity: string;
-  experience: string;
-  legalNameZh?: string;
-  headquartersZh?: string;
-  marketsZh?: string[];
-  employeesZh?: string;
-  factoryAreaZh?: string;
-  annualCapacityZh?: string;
-  experienceZh?: string;
+  headquarters: LocalizedString;
+  markets: LocalizedString[];
+  employees: LocalizedString;
+  factoryArea: LocalizedString;
+  annualCapacity: LocalizedString;
+  experience: LocalizedString;
 }
 
 export interface FactoryStat {
   value: string;
-  label: string;
-  note?: string;
-  labelZh?: string;
-  noteZh?: string;
+  label: LocalizedString;
+  note?: LocalizedString;
 }
 
 export interface ContactConfig {
@@ -49,26 +48,20 @@ export interface ContactConfig {
   phoneHref: string;
   whatsapp: string;
   whatsappHref: string;
-  addressLines: string[];
-  country: string;
-  businessHours: string;
-  responseTime: string;
-  addressLinesZh?: string[];
-  countryZh?: string;
-  businessHoursZh?: string;
-  responseTimeZh?: string;
+  addressLines: LocalizedString[];
+  country: LocalizedString;
+  businessHours: LocalizedString;
+  responseTime: LocalizedString;
 }
 
 export interface NavItem {
-  label: string;
+  label: LocalizedString;
   href: string;
-  labelZh?: string;
 }
 
 export interface FooterColumn {
-  title: string;
+  title: LocalizedString;
   links: NavItem[];
-  titleZh?: string;
 }
 
 export interface NavigationConfig {
@@ -120,36 +113,25 @@ export type Finish = 'white' | 'black' | 'chrome' | 'champagne' | 'graphite';
 export interface Category {
   id: string;
   slug: string;
-  name: string;
-  /** Chinese display name — used when locale is zh. */
-  nameZh?: string;
-  shortName: string;
-  /** Chinese short name — used when locale is zh. */
-  shortNameZh?: string;
-  description: string;
-  /** Chinese description — used when locale is zh. */
-  descriptionZh?: string;
-  longDescription: string;
+  name: LocalizedString;
+  shortName: LocalizedString;
+  description: LocalizedString;
+  longDescription: LocalizedString;
   keywords: string[];
 }
 
 export interface Certification {
   id: string;
   code: string;
-  name: string;
-  description: string;
-  /** Chinese description — used when locale is zh. */
-  descriptionZh?: string;
-  nameZh?: string;
+  name: LocalizedString;
+  description: LocalizedString;
   /** Which products / markets this certification covers. */
-  scope: string;
-  scopeZh?: string;
+  scope: LocalizedString;
 }
 
 export interface SpecRow {
-  label: string;
+  label: LocalizedString;
   value: string;
-  labelZh?: string;
 }
 
 export interface ProductVisualSpec {
@@ -172,23 +154,14 @@ export interface ProductImages {
 export interface Product {
   id: string;
   slug: string;
-  name: string;
-  /** Chinese display name — used when locale is zh. */
-  nameZh?: string;
+  name: LocalizedString;
   sku: string;
   categoryId: string;
-  shortDescription: string;
-  /** Chinese short description — used when locale is zh. */
-  shortDescriptionZh?: string;
-  /** Chinese full description — used when locale is zh. */
-  descriptionZh?: string;
-  description: string;
-  features: string[];
-  /** Chinese features, index-matched — used when locale is zh. */
-  featuresZh?: string[];
+  shortDescription: LocalizedString;
+  description: LocalizedString;
+  features: LocalizedString[];
   specifications: SpecRow[];
-  applications: string[];
-  applicationsZh?: string[];
+  applications: LocalizedString[];
   certificationIds: string[];
   keywords: string[];
   featured?: boolean;
@@ -197,69 +170,58 @@ export interface Product {
   visual: ProductVisualSpec;
   /** Real photography slots; absent views fall back to the SVG demo renderer. */
   images?: ProductImages;
-  colors: string[];
-  colorsZh?: string[];
-  warranty: string;
-  warrantyZh?: string;
-  packaging: string;
-  packagingZh?: string;
-  moq: string;
-  moqZh?: string;
-  leadTime: string;
-  leadTimeZh?: string;
+  colors: LocalizedString[];
+  warranty: LocalizedString;
+  packaging: LocalizedString;
+  moq: LocalizedString;
+  leadTime: LocalizedString;
   relatedSlugs?: string[];
 }
 
 /* ---------- Marketing sections ---------- */
 
 export interface HeroConfig {
-  eyebrow: string;
-  eyebrowZh?: string;
-  titleLines: string[];
-  titleLinesZh?: string[];
-  description: string;
-  descriptionZh?: string;
+  eyebrow: LocalizedString;
+  titleLines: LocalizedString[];
+  description: LocalizedString;
   primaryCta: NavItem;
   secondaryCta: NavItem;
   /** Technical metadata line — rendered as quiet mono annotation, not badges. */
-  footnote: string;
-  footnoteZh?: string;
+  footnote: LocalizedString;
   /** Caption under the hero visual, styled like a drawing title block. */
-  visualCaption: string;
-  visualCaptionZh?: string;
+  visualCaption: LocalizedString;
 }
 
 export interface Capability {
   id: string;
   index: string;
-  title: string;
-  /** Chinese title — used when locale is zh. */
-  titleZh?: string;
-  description: string;
-  points: string[];
-  /** Chinese description/points, index-matched — used when locale is zh. */
-  descriptionZh?: string;
-  pointsZh?: string[];
+  title: LocalizedString;
+  description: LocalizedString;
+  points: LocalizedString[];
 }
 
 export interface FaqItem {
-  question: string;
-  answer: string;
-  /** Chinese question — used when locale is zh. */
-  questionZh?: string;
-  /** Chinese answer — used when locale is zh. */
-  answerZh?: string;
+  question: LocalizedString;
+  answer: LocalizedString;
 }
 
 export interface CtaBandConfig {
-  eyebrow: string;
-  eyebrowZh?: string;
-  title: string;
-  titleZh?: string;
-  description: string;
-  descriptionZh?: string;
+  eyebrow: LocalizedString;
+  title: LocalizedString;
+  description: LocalizedString;
   primaryCta: NavItem;
   secondaryCta: NavItem;
+}
+
+export interface PdpConfig {
+  oemLabel: LocalizedString;
+  oemNote: LocalizedString;
+  oemHref: string;
+}
+
+export interface FooterCtaConfig {
+  title: LocalizedString;
+  cta: NavItem;
 }
 
 /* ---------- Inquiry ---------- */
