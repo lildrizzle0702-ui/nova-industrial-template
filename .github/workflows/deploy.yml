@@ -28,7 +28,6 @@ jobs:
       # GitHub Pages serves 404.html for unknown paths; serving the SPA shell
       # there lets client-side routes (e.g. /products/:slug) survive refresh.
       - run: cp dist/index.html dist/404.html
-      - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

@@ -39,6 +39,13 @@ See `src/config/factory.config.aunt.ts.example` for a fully filled example confi
 
 The site is bilingual (English + Chinese). All user-facing content in `src/config/factory.config.ts` is stored as `{ en: string; zh: string }` objects via the `LocalizedString` type in `src/data/types.ts`.
 
+### Workflow for new clients (中文母版 → 英文译文)
+
+1. 新客户先填写所有 `zh` 字段——中文是母版（master copy），以工厂真实信息为准逐项填写。
+2. 英文 `en` 字段由中文翻译生成，不单独撰写，保证两种语言内容一致。
+3. 翻译生成后对照 `zh` 抽查术语（认证名、规格单位、MOQ/交期表述）是否符合客户习惯。
+4. 联系方式类字段（email、phone、WhatsApp、地址）不是翻译内容，直接填真实值即可。
+
 ### Adding or editing copy
 
 1. Open `src/config/factory.config.ts`.
@@ -75,10 +82,11 @@ A language toggle is always visible in the site header. Switching stores the pre
 
 ### New-client launch checklist
 
-1. Replace `{{SITE_URL_PLACEHOLDER}}` in `src/config/factory.config.ts` (`seo.siteUrl`) with the real domain, e.g. `https://xxx.github.io/仓库名/`.
-2. Replace the `{{..._PLACEHOLDER}}` contact values in the same file.
-3. Update `src/config/thirdParty.ts` with real Formspree, WhatsApp, Clarity, and GA4 IDs.
-4. Add real photos under `public/assets/client/` and set `mediaMode: 'client'` in `src/config/media.ts`.
+1. 建完仓库后，先去 **Settings → Pages**，把 **Source** 选为 **GitHub Actions** 并确认保存，然后再 push 代码。（workflow 已移除 `actions/configure-pages` 步骤——它会在 Pages 未激活时 404 失败；先激活 Pages，首次部署即可成功。）
+2. Replace `{{SITE_URL_PLACEHOLDER}}` in `src/config/factory.config.ts` (`seo.siteUrl`) with the real domain, e.g. `https://xxx.github.io/仓库名/`.
+3. Replace the `{{..._PLACEHOLDER}}` contact values in the same file.
+4. Update `src/config/thirdParty.ts` with real Formspree, WhatsApp, Clarity, and GA4 IDs.
+5. Add real photos under `public/assets/client/` and set `mediaMode: 'client'` in `src/config/media.ts`.
 
 ## Service placeholders
 
